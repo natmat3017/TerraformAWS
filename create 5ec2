@@ -1,0 +1,28 @@
+provider "aws" {
+  region = var.region
+  shared_credentials_files =  ["~/.aws/credentials"]
+}
+
+
+
+resource "aws_instance" "myec2" {
+  ami           = data.aws_ami.myami.id
+  instance_type = var.instance_type
+  count = 5
+
+  tags = {
+    Name = " ${var.env}-${count.index}"
+  }
+}
+
+
+
+
+data "aws_ami" "myami" {
+ most_recent = true
+ owners = ["amazon"]
+ filter{
+  name = "name"
+  values = ["amzn2-ami-hvm*"]
+}
+}
